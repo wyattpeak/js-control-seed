@@ -24,34 +24,105 @@ if (process.env.NODE_ENV === 'development') {
  * JSControl class. Name of class will become name of functional constructor that
  * Decisions will call to create an instance of your control.
  * 1. Rename to reflect the name of your JS Control
- * @typedef {DecisionsJsControl} JsControlName
+ * @typedef {DecisionsJsControl} SortControl
  */
-export class JsControlName {
+export class SortControl {
   /** @type {HTMLElement} parent element, within which to render your control. */
   parentElement;
 
   /** @type {JQuery<HTMLElement>} host */
   host;
 
-  /** @type {HTMLLabelElement} */
-  labelWrapper;
+  /** @type {HTMLDivElement} */
+  wrapper;
 
-  /**@type {HTMLSpanElement} */
-  labelText;
+  /**@type {HTMLDivElement} */
+  label;
 
-  /** @type {HTMLInputElement} */
-  input;
+  /** @type {HTMLDivElement} */
+  sortableList;
+
+  /** @type {HTMLButtonElement} */
+  addButton;
+
+  lastDraggedOver;
+  curDropSlot;
+
+  addListDropSlot(cls, listElement) {
+    let elDropSlot = document.createElement('div');
+    elDropSlot.className = 'sort-list-drop-slot';
+
+    cls.sortableList.appendChild(elDropSlot);
+  }
+
+  addListElement(cls, value) {
+    let el = document.createElement('div');
+    el.className = 'sort-list-element';
+    el.setAttribute('draggable', 'true');
+
+    let elLabel = document.createElement('div');
+    elLabel.className = 'sort-list-element-label';
+    elLabel.innerText = value;
+
+    let elDelete = document.createElement('div');
+    elDelete.className = 'sort-list-element-delete';
+    elDelete.innerText = 'x';
+
+    elDelete.addEventListener('click', function(el) {
+      let listElement = el.target.parentNode;
+      let dropSlot = $(listElement).next('.sort-list-drop-slot')[0];
+      cls.sortableList.removeChild(listElement);
+      cls.sortableList.removeChild(dropSlot);
+    })
+
+    el.appendChild(elLabel);
+    el.appendChild(elDelete);
+
+    cls.sortableList.appendChild(el);
+
+    cls.addListDropSlot(cls);
+  }
 
   constructor() {
-    this.labelWrapper = document.createElement('label');
-    this.labelWrapper.style.border = "dashed purple 1px";
-    this.labelWrapper.className = 'my-label-wrapper';
-    this.labelText = document.createElement('span');
-    this.labelText.className = 'my-label-text';
-    this.labelWrapper.appendChild(this.labelText);
-    this.input = document.createElement('input');
-    this.input.className = 'my-input';
-    this.labelWrapper.appendChild(this.input);
+    this.wrapper = document.createElement('div');
+    this.wrapper.className = 'sort-wrapper';
+
+    this.label = document.createElement('div');
+    this.label.className = 'sort-label';
+
+    this.sortableList = document.createElement('div');
+    this.sortableList.className = 'sort-list';
+
+    let cls = this;
+    this.addButton = document.createElement('button');
+    this.addButton.className = 'sort-add-button';
+    this.addButton.innerText = '+';
+    this.addButton.addEventListener('click', function(el) {
+      let newElement = prompt('Please enter the new element name');
+      cls.addListElement(cls, newElement);
+    })
+
+    this.lastDraggedOver = null;
+    $(this.sortableList).on('dragstart', '.sort-list-element', function(e) {
+      cls.lastDraggedOver = null;
+      cls.curDropSlot = $(e.currentTarget).next('.sort-list-drop-slot')[0];
+    });
+
+    $(this.sortableList).on('dragend', '.sort-list-element', function(e) {
+      let el = e.currentTarget;
+      if(cls.lastDraggedOver != null) {
+        cls.lastDraggedOver.after(el);
+        el.after(cls.curDropSlot);
+      }
+    });
+
+    $(this.sortableList).on('dragover', '.sort-list-drop-slot', function(e) {
+      cls.lastDraggedOver = e.currentTarget;
+    });
+
+    this.wrapper.appendChild(this.label);
+    this.wrapper.appendChild(this.sortableList);
+    this.wrapper.appendChild(this.addButton);
   }
 
   /**
@@ -65,7 +136,7 @@ export class JsControlName {
   initialize(host) {
     this.host = host;
     this.parentElement = host[0];
-    this.parentElement.appendChild(this.labelWrapper);
+    this.parentElement.appendChild(this.wrapper);
   }
 
   /**
@@ -74,8 +145,15 @@ export class JsControlName {
    */
   setValue(values) {
     // store any data your control needs to store
-    this.labelText.innerText = values.name;
-    this.input.value = values.value;
+    this.label.innerText = values.name;
+
+    this.sortableList.innerHTML = '';
+
+    let cls = this;
+    this.addListDropSlot(cls);
+    values.value.forEach(function(val) {
+      cls.addListElement(cls, val);
+    });
   }
 
   /**
@@ -91,9 +169,16 @@ export class JsControlName {
    * Return values if control needs to output data.
    */
   getValue() {
-    return { value: this.input.value };
+    let value = [];
+
+    let listElements = $(this.sortableList).find('.sort-list-element-label');
+    listElements.each(function(el) {
+      value.push($(this).text());
+    });
+
+    return {name: this.label.innerText, value: value};
   }
 }
 
 // add constructor to global context.
-window.JsControlName = JsControlName;
+window.SortControl = SortControl;

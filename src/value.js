@@ -4,6 +4,6 @@
  * Edit this to reflect the data your control is expecting.
  */
 export const value = {
-  name: 'Field Name',
-  value: 'Field Value',
+  name: 'What states will the data transition through?',
+  value: ['Requested', 'Approved', 'Pending Fulfillment', 'Complete'],
 };

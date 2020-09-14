@@ -5,7 +5,7 @@ module.exports = {
   /**
    * this should match the JS Control class or functional constructor name.
    */
-  JS_CONTROL_NAME: 'JsControlName',
+  JS_CONTROL_NAME: 'SortControl',
   /**
    * name of file to resolve, in case you rename it
    */

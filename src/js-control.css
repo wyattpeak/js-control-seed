@@ -1,25 +1,59 @@
 /* Example CSS for our example control */
 
-.my-label-wrapper {
-  padding: 4px 8px 16px;
+.sort-wrapper {
   display: flex;
   flex-direction: column;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva,
-    Verdana, sans-serif;
-  background: #fff;
+  align-items: center;
 }
 
-.my-label-text {
+.sort-label {
   color: #333;
-  font-size: 15px;
+  font: 12pt arial;
+  font-weight: bold;
 }
 
-.my-input {
-  font-size: 18px;
-  color: black;
-  background: #ddd;
-  border-radius: 3px;
-  padding: 4px 6px;
-  border: solid 1px #ccc;
-  /* border: solid 1px #999; */
+.sort-list {
+  width: 250px;
+}
+
+.sort-list-element {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #c0c0c0;
+  padding: 10px;
+  width: 100%;
+  background-color: #ffffff;
+  cursor: default;
+}
+
+.sort-list-element-label {
+  font: 12pt arial;
+  overflow: hidden;
+}
+
+.sort-list-element-delete {
+  font: 12pt arial;
+  color: #808080;
+  cursor: pointer;
+}
+
+.sort-list-drop-slot {
+  width: 100%;
+  height: 10px;
+  padding: 0px 10px;
+}
+
+.sort-add-button {
+  width: 35px;
+  height: 35px;
+  background-color:#0081c2;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  line-height: 30px;
+  font: 16pt arial;
+  font-weight: bold;
+  cursor: pointer;
 }
