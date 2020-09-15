@@ -103,6 +103,8 @@ export class SortControl {
 
     this.newElement = document.createElement('div');
     this.newElement.className = 'sort-new-element';
+    this.newElement.style.display = 'none';
+
     this.newElementInput = document.createElement('input');
     this.newElementInput.addEventListener('keyup', function(e) {
       if(e.key === 'Enter' || e.keyCode === 13) {
@@ -113,7 +115,17 @@ export class SortControl {
         cls.newElement.style.display = 'none';
       }
     });
+
+    let elDelete = document.createElement('div');
+    elDelete.className = 'sort-list-element-delete';
+    elDelete.innerText = 'x';
+    elDelete.addEventListener('click', function(e) {
+      cls.newElementInput.value = '';
+      cls.newElement.style.display = 'none';
+    });
+
     this.newElement.appendChild(this.newElementInput);
+    this.newElement.appendChild(elDelete);
 
     this.addButton = document.createElement('button');
     this.addButton.className = 'sort-add-button';

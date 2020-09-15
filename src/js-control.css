@@ -32,6 +32,7 @@
 }
 
 .sort-list-element-delete {
+  height: 100%;
   font: 12pt arial;
   color: #808080;
   cursor: pointer;
@@ -48,7 +49,7 @@
 }
 
 .sort-new-element {
-  display: none;
+  display: flex;
   justify-content: space-between;
   border: 1px solid #c0c0c0;
   padding: 10px;
@@ -59,7 +60,7 @@
 }
 
 .sort-new-element input {
-  width: 100%;
+  width: 200px;
 }
 
 .sort-add-button {
