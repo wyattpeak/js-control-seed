@@ -42,6 +42,12 @@ export class SortControl {
   /** @type {HTMLDivElement} */
   sortableList;
 
+  /** @type {HTMLDivElement} */
+  newElement;
+
+  /** @type {HTMLInputElement} */
+  newElementInput;
+
   /** @type {HTMLButtonElement} */
   addButton;
 
@@ -73,7 +79,7 @@ export class SortControl {
       let dropSlot = $(listElement).next('.sort-list-drop-slot')[0];
       cls.sortableList.removeChild(listElement);
       cls.sortableList.removeChild(dropSlot);
-    })
+    });
 
     el.appendChild(elLabel);
     el.appendChild(elDelete);
@@ -84,6 +90,8 @@ export class SortControl {
   }
 
   constructor() {
+    let cls = this;
+
     this.wrapper = document.createElement('div');
     this.wrapper.className = 'sort-wrapper';
 
@@ -93,14 +101,27 @@ export class SortControl {
     this.sortableList = document.createElement('div');
     this.sortableList.className = 'sort-list';
 
-    let cls = this;
+    this.newElement = document.createElement('div');
+    this.newElement.className = 'sort-new-element';
+    this.newElementInput = document.createElement('input');
+    this.newElementInput.addEventListener('keyup', function(e) {
+      if(e.key === 'Enter' || e.keyCode === 13) {
+        let newElement = cls.newElementInput.value;
+        cls.addListElement(cls, newElement);
+
+        cls.newElementInput.value = '';
+        cls.newElement.style.display = 'none';
+      }
+    });
+    this.newElement.appendChild(this.newElementInput);
+
     this.addButton = document.createElement('button');
     this.addButton.className = 'sort-add-button';
     this.addButton.innerText = '+';
-    this.addButton.addEventListener('click', function(el) {
-      let newElement = prompt('Please enter the new element name');
-      cls.addListElement(cls, newElement);
-    })
+    this.addButton.addEventListener('click', function(e) {
+      cls.newElement.style.display = 'flex';
+      cls.newElementInput.focus();
+    });
 
     this.lastDraggedOver = null;
     $(this.sortableList).on('dragstart', '.sort-list-element', function(e) {
@@ -109,6 +130,8 @@ export class SortControl {
     });
 
     $(this.sortableList).on('dragend', '.sort-list-element', function(e) {
+      $('.sort-list-drop-slot').removeClass('active-drop');
+
       let el = e.currentTarget;
       if(cls.lastDraggedOver != null) {
         cls.lastDraggedOver.after(el);
@@ -118,10 +141,13 @@ export class SortControl {
 
     $(this.sortableList).on('dragover', '.sort-list-drop-slot', function(e) {
       cls.lastDraggedOver = e.currentTarget;
+      $('.sort-list-drop-slot').removeClass('active-drop');
+      $(e.currentTarget).addClass('active-drop');
     });
 
     this.wrapper.appendChild(this.label);
     this.wrapper.appendChild(this.sortableList);
+    this.wrapper.appendChild(this.newElement);
     this.wrapper.appendChild(this.addButton);
   }
 

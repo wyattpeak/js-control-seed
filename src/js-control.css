@@ -43,6 +43,25 @@
   padding: 0px 10px;
 }
 
+.sort-list-drop-slot.active-drop {
+  height: 50px;
+}
+
+.sort-new-element {
+  display: none;
+  justify-content: space-between;
+  border: 1px solid #c0c0c0;
+  padding: 10px;
+  margin: 0px 0px 10px 22px;
+  width: 250px;
+  background-color: #ffffff;
+  cursor: default;
+}
+
+.sort-new-element input {
+  width: 100%;
+}
+
 .sort-add-button {
   width: 35px;
   height: 35px;
